@@ -45,11 +45,11 @@ let nombrePro = d.querySelector('.nombre-producto')
 let precioPro = d.querySelector('.precio-producto')
 let presentacionPro = d.querySelector('.presentacion-producto')
 let imagenPro = d.querySelector('.imagen-producto')
-let botonGuardar = d.querySelector('.btn-guardar')
+let btnGuardar = d.querySelector('.btn-guardar')
 let tabla = d.querySelector('.table > tbody')
 
 //evento para el boton guardar
-botonGuardar.addEventListener('click', () => {
+btnGuardar.addEventListener('click', () => {
   let datos = obtenerDatos()
   guardarDatos(datos)
   borrarTabla()
@@ -101,8 +101,8 @@ function mostrarDatos(){
             <td> ${p.precio} </td>
             <td> ${p.presentacion} </td>
             <td> <img src='${p.imagen}' width='50%' >  </td>
-            <td> <span class= 'btn-editar btn btn-warning'> ✏ </span></td>
-            <td> <span class= 'btn-eliminar btn btn-danger'> ❌ </span></td>
+            <td> <span onclick='actualizarPedido(${i})' class= 'btn-editar btn btn-warning'> ✏ </span></td>
+            <td> <span onclick='eliminarPedido(${i})' class='btn-eliminar btn btn-danger'> ❌ </span></td>
 
 
         `
@@ -116,6 +116,37 @@ function borrarTabla(){
         f.remove()
     })
 
+}
+
+function actualizarPedido(pos){
+  let pedidos = []
+  let pedidosPrevios = JSON.parse(localStorage.getItem(listadoPedidos))
+  if(pedidosPrevios != null){
+    pedidos = pedidosPrevios
+  }
+  nombrePro.value = pedidos[pos].nombre
+  precioPro.value = pedidos[pos].precio
+  presentacionPro.value = pedidos[pos].presentacion
+
+  let btnActualizar = d.querySelector('.btn-actualizar')
+  btnActualizar.classList.toggle('d-none')
+  btnGuardar.classList.toggle('d-none')
+}
+
+function eliminarPedido(pos){
+  let pedidos = []
+  let pedidosPrevios = JSON.parse(localStorage.getItem(listadoPedidos))
+  if(pedidosPrevios != null){
+    pedidos = pedidosPrevios
+  }
+  let confirmar = confirm(`¿Deseas eliminar el pedido ${pedidos[pos].nombre}?`)
+  if(confirmar) {
+    pedidos.splice(pos, 1)
+    alert(`EL PEDIDO HA SIDO ELIMINADO CON ÉXITO.`)
+    localStorage.setItem(listadoPedidos, JSON.stringify(pedidos))
+    borrarTabla()
+    mostrarDatos()
+  }
 }
 
 addEventListener('DOMContentLoaded', ()=> {
